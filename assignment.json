@@ -203,9 +203,7 @@
    ],
    "block": null,
    "added": "2026-11-18",
-   "notes": [
-    "Note: message list is a placeholder, reuse the quickstart chat list."
-   ],
+   "notes": [],
    "links": [
     {
      "text": null,
@@ -230,9 +228,7 @@
    ],
    "block": null,
    "added": "2026-11-18",
-   "notes": [
-    "Note: agent prompt never mentions filter_tasks (still works)."
-   ],
+   "notes": [],
    "links": [
     {
      "text": null,
@@ -297,9 +293,7 @@
    ],
    "block": null,
    "added": "2026-11-18",
-   "notes": [
-    "Note: extra tools, SYSTEM_PROMPT and build not shown; weather card works."
-   ],
+   "notes": [],
    "links": [
     {
      "text": null,
@@ -434,9 +428,7 @@
    "findings": [],
    "block": null,
    "added": "2026-11-18",
-   "notes": [
-    "Note: imports ./src/ChatScreen, never shown."
-   ],
+   "notes": [],
    "links": [
     {
      "text": null,
@@ -460,9 +452,7 @@
    ],
    "block": null,
    "added": "2026-11-18",
-   "notes": [
-    "Note: no Antigravity agent shown; quickstart agent naming the tool works."
-   ],
+   "notes": [],
    "links": [
     {
      "text": null,
@@ -530,7 +520,8 @@
    "added": "2026-11-18",
    "notes": [
     "Note: no React Native build of Inspector."
-   ]
+   ],
+   "excluded": "Backend section of the docs sidebar (owner 2026-11-23: Backend pages out of scope)"
   }
  ]
 }
