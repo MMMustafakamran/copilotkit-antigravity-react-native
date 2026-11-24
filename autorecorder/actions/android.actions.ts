@@ -190,12 +190,38 @@ export async function runAndroidChat(page: Page, config: PageRecordConfig, root:
     if (cfg.before?.length) logAction('screen', 'after before-steps', 'ok', { texts: texts(dump().nodes).slice(0, 20) });
 
     let screen = dump();
+    // HARNESS (recorder): CI's dev build sometimes can't reach Metro on the first load ("Cannot connect to Metro",
+    // "Fast Refresh disconnected" over a blank screen). Wait and reopen the deep link, up to 3 times.
+    for (let r = 0; r < 3 && texts(screen.nodes).some((t) => /cannot connect to metro|disconnected from metro|fast refresh disconnected/i.test(t)); r++) {
+      logAction('check', 'metro not connected, reopening deep link', `retry ${r + 1}`);
+      await sleep(5000);
+      openDeepLink(config.id);
+      await sleep(8000);
+      screen = dump();
+    }
     // The dev build loads its JS bundle from Metro first: wait (up to 60 s) for the page's composer to appear.
     if (cfg.prompt && !cfg.noInput) {
       const until = Date.now() + 60_000;
       while (!screen.nodes.some((n) => n.cls.endsWith('EditText')) && Date.now() < until) {
         await sleep(2000);
         screen = dump();
+      }
+    }
+    // HARNESS (recorder): the Metro banner can also show up only after the composer did (bundle load timed out).
+    // Settle a few seconds, then reopen the deep link and wait for the composer again, up to 2 times.
+    if (cfg.prompt && !cfg.noInput) {
+      for (let r = 0; r < 2; r++) {
+        await sleep(4000);
+        screen = dump();
+        if (!texts(screen.nodes).some((t) => /cannot connect to metro|disconnected from metro|fast refresh disconnected/i.test(t))) break;
+        logAction('check', 'metro disconnected after load, reopening deep link', `retry ${r + 1}`);
+        sh('am force-stop com.mycopilotapp');
+        await sleep(3000);
+        openDeepLink(config.id);
+        const until2 = Date.now() + 90_000;
+        await sleep(8000);
+        screen = dump();
+        while (!screen.nodes.some((n) => n.cls.endsWith('EditText')) && Date.now() < until2) { await sleep(2000); screen = dump(); }
       }
     }
     const { w, h } = deviceSize(screen.nodes);
